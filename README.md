@@ -1,14 +1,14 @@
-# Directory Mock Server
+# OnDemand Mock Server
 
 _A Microservice API utilizing Node JS and Express._
 
-_What_: A mock server to enable parallel workstreams between iOS, Web, Android and Back-end platforms. The services in this application are meant to serve as API contracts between the client and backend platforms.
+_What_: A mock server to enable parallel workstreams between iOS, Android and Back-end platforms. The services in this application are meant to serve as API contracts between the client and backend platforms.
 
 ## Prerequisites
 
 ### NPS
 
-Directory Mock Server uses [nps] to define and execute npm scripts without the cost of a bloated package.json and the limits of JSON.
+OnDemand Mock Server uses [nps] to define and execute npm scripts without the cost of a bloated package.json and the limits of JSON.
 
 `npm start` is defined (in `package.json`) as an alias for `nps`, hence all scripts are run via `npm start <...>`
 
@@ -27,8 +27,8 @@ and [Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
 Clone this repo
 
 ```sh
-git clone https://github.com/jennyChoudhry/directory-mock-server
-cd directory-mock-server
+git clone https://github.com/jennyChoudhry/on-demand-mock-server
+cd on-demand-mock-server
 ```
 
 Install all dependencies

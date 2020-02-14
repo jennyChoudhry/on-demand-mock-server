@@ -1,13 +1,13 @@
 {
-    "name": "directory-mock-server",
+    "name": "on-demand-mock-server",
     "version": "1.0.0",
-    "description": "Mock Server for WeWork's new Directory feature. Leveraging Node.js and Express",
+    "description": "Mock Server for WeWork's OnDemand Migration features. Leveraging Node.js and Express",
     "scripts": {
         "start": "nps"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/jennyChoudhry/directory-mock-server"
+        "url": "https://github.com/jennyChoudhry/on-demand-mock-server"
     },
     "license": "MIT",
     "dependencies": {

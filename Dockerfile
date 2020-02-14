@@ -19,5 +19,5 @@ ENV NODE_ENV=dev
 CMD npm start api
 
 ## Run using:
-# docker build  -t directory-mock-server/api .
-# docker run -d --name=directory-mock-server-api -p 4000:4000 directory-mock-server/api
+# docker build  -t od-mock-server/api .
+# docker run -d --name=od-mock-server-api -p 4000:4000 od-mock-server/api

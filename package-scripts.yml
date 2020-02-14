@@ -11,9 +11,9 @@ scripts:
     default: nps container.clear && nps container.start
     start: 
       default: nps container.start.build && nps container.start.run
-      build:  docker build -t directory-mock-server/api .
-      run: docker run -d --name=directory-mock-server-api -p 4000:4000 directory-mock-server/api
+      build:  docker build -t od-mock-server/api .
+      run: docker run -d --name=od-mock-server-api -p 4000:4000 od-mock-server/api
     clear:
       default: nps container.clear.kill && nps container.clear.rm 
-      kill: docker kill $(docker ps -aqf name=directory-mock-server-api) || true
-      rm: docker rm $(docker ps -aqf name=directory-mock-server-api) || true
+      kill: docker kill $(docker ps -aqf name=od-mock-server-api) || true
+      rm: docker rm $(docker ps -aqf name=od-mock-server-api) || true

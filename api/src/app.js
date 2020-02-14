@@ -6,10 +6,7 @@ import { json } from 'body-parser';
 
 import logger from './logging';
 
-import permissions from './resources/permissions';
 import users from './resources/users';
-import directory from './resources/directory';
-import companies from './resources/companies';
 
 import packageJson from '../../package.json';
 
@@ -35,10 +32,8 @@ async function main() {
     res.json({ message: 'Luna is healthy' });
   });
 
-  api.use('/permissions', permissions());
   api.use('/users', users());
-  api.use('/directory', directory());
-  api.use('/companies', companies());
+  // routes..
 
   app.use('/api/v13', api);
 

@@ -5,4 +5,4 @@
 node_modules
 
 npm-debug.log
-api/directory-mock-server.log
+api/od-mock-server.log
