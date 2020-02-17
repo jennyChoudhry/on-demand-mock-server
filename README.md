@@ -2,7 +2,7 @@
 
 _A Microservice API utilizing Node JS and Express._
 
-_What_: A mock server to enable parallel workstreams between iOS, Android and Back-end platforms. The services in this application are meant to serve as API contracts between the client and backend platforms.
+_What_: A mock server to enable parallel workstreams between iOS, Android and Back-end platforms within the OnDemand Growth Squad. The services in this application are meant to serve as API contracts between the client and backend platforms.
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ Run app in a terminal window:
 npm start
 ```
 
-The application can also be run containorized with `npm start container` and stopped with `npm start container.clear`
+The application can also be run containerized with `npm start container` and stopped with `npm start container.clear`
 
 Application is running on http://localhost:4000
 

@@ -6,7 +6,9 @@ import { json } from 'body-parser';
 
 import logger from './logging';
 
-import users from './resources/users';
+import paymentProfiles from './resources/payment-profiles';
+import payments from './resources/payments';
+import subscriptions from './resources/subscriptions';
 
 import packageJson from '../../package.json';
 
@@ -32,10 +34,11 @@ async function main() {
     res.json({ message: 'Luna is healthy' });
   });
 
-  api.use('/users', users());
-  // routes..
+  api.use('/payment_profiles', paymentProfiles());
+  api.use('/payments', payments());
+  api.use('/subscriptions', subscriptions());
 
-  app.use('/api/v13', api);
+  app.use('/v1', api);
 
   log.info('Starting API server');
   app.server = http.createServer(app);
