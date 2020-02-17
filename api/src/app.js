@@ -6,6 +6,7 @@ import { json } from 'body-parser';
 
 import logger from './logging';
 
+import customers from './resources/customers';
 import paymentProfiles from './resources/payment-profiles';
 import payments from './resources/payments';
 import subscriptions from './resources/subscriptions';
@@ -34,6 +35,7 @@ async function main() {
     res.json({ message: 'Luna is healthy' });
   });
 
+  api.use('/customers', customers());
   api.use('/payment_profiles', paymentProfiles());
   api.use('/payments', payments());
   api.use('/subscriptions', subscriptions());
