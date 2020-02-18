@@ -1,0 +1,760 @@
+openapi: 3.0.0
+
+# ==== START Reusable snippets ====
+common-error-responses: &common-error-responses
+  '401':
+    description: Unauthorized
+  '500':
+    description: Internal Server Error
+
+currencies: &currencies
+  enum:
+    [
+      aed,
+      afn,
+      all,
+      amd,
+      ang,
+      aoa,
+      ars,
+      aud,
+      awg,
+      azn,
+      bam,
+      bbd,
+      bdt,
+      bgn,
+      bhd,
+      bif,
+      bmd,
+      bnd,
+      bob,
+      brl,
+      bsd,
+      btn,
+      bwp,
+      byn,
+      bzd,
+      cad,
+      cdf,
+      chf,
+      clp,
+      cny,
+      cop,
+      crc,
+      cuc,
+      cup,
+      cve,
+      czk,
+      djf,
+      dkk,
+      dop,
+      dzd,
+      egp,
+      ern,
+      etb,
+      eur,
+      fjd,
+      fkp,
+      gbp,
+      gel,
+      ggp,
+      ghs,
+      gip,
+      gmd,
+      gnf,
+      gtq,
+      gyd,
+      hkd,
+      hnl,
+      hrk,
+      htg,
+      huf,
+      idr,
+      ils,
+      imp,
+      inr,
+      iqd,
+      irr,
+      isk,
+      jep,
+      jmd,
+      jod,
+      jpy,
+      kes,
+      kgs,
+      khr,
+      kmf,
+      kpw,
+      krw,
+      kwd,
+      kyd,
+      kzt,
+      lak,
+      lbp,
+      lkr,
+      lrd,
+      lsl,
+      lyd,
+      mad,
+      mdl,
+      mga,
+      mkd,
+      mmk,
+      mnt,
+      mop,
+      mru,
+      mur,
+      mvr,
+      mwk,
+      mxn,
+      myr,
+      mzn,
+      nad,
+      ngn,
+      nio,
+      nok,
+      npr,
+      nzd,
+      omr,
+      pab,
+      pen,
+      pgk,
+      php,
+      pkr,
+      pln,
+      pyg,
+      qar,
+      ron,
+      rsd,
+      rub,
+      rwf,
+      sar,
+      sbd,
+      scr,
+      sdg,
+      sek,
+      sgd,
+      shp,
+      sll,
+      sos,
+      spl,
+      srd,
+      stn,
+      svc,
+      syp,
+      szl,
+      thb,
+      tjs,
+      tmt,
+      tnd,
+      top,
+      try,
+      ttd,
+      tvd,
+      twd,
+      tzs,
+      uah,
+      ugx,
+      usd,
+      uyu,
+      uzs,
+      vef,
+      vnd,
+      vuv,
+      wst,
+      xaf,
+      bea,
+      xcd,
+      xdr,
+      xof,
+      xpf,
+      yer,
+      zar,
+      zmw,
+      zwd,
+    ]
+# ==== END Reusable snippets ====
+
+info:
+  description: API documentation for our wrapper service around Stripe
+  version: '1.0.0'
+  title: Stripe Wrapper Service
+  termsOfService: 'http://swagger.io/terms/'
+
+tags:
+  - name: customers
+    description: Operations on customers
+  - name: payment_profiles
+    description: Operations around Stripe payment profiles
+  - name: subscriptions
+    description: Operations around Stripe subscriptions
+  - name: payments
+    description: Operations around Stripe payments, charges, & refunds
+  - name: plans
+    description: Operations around Stripe plans
+
+paths:
+  /customers:
+    post:
+      tags:
+        - customers
+      summary: Creates the customer in Stripe; noop if already created
+      description: ''
+      operationId: createAccount
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_uuid:
+                  type: string
+                  format: uuid
+                  required: true
+                account_admin_uuid:
+                  type: string
+                  format: uuid
+                  required: true
+        description: ''
+        required: true
+      responses:
+        '200':
+          description: >-
+            Successfully created the customer in Stripe
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Customer'
+        <<: *common-error-responses
+
+  /payment_profiles/on_board:
+    post:
+      tags:
+        - payment_profiles
+      summary: Starts the process to add a payment profile to a user's account
+      description: ''
+      operationId: onBoardPaymentMethod
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                set_as_default:
+                  type: boolean
+        description: Whether to set the payment profile as the default payment profile for the user's account
+      responses:
+        '200':
+          description: >-
+            Successfully starts the process to on board a new payment profile
+            to a user's account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PaymentProfileOnboardResponse'
+        <<: *common-error-responses
+
+  /payment_profiles:
+    get:
+      tags:
+        - payment_profiles
+      summary: Get an account's payment profiles
+      description: ''
+      operationId: getPaymentProfiles
+      security:
+        - bearer_auth: []
+        - api_key: []
+      parameters:
+        - in: query
+          name: account_uuid
+          description: Account uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: >-
+            Successully grab's the payment profiles of a user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PaymentProfile'
+        <<: *common-error-responses
+
+  '/payment_profiles/{payment_profile_uuid}':
+    parameters:
+      - in: path
+        name: payment_profile_uuid
+        description: Payment profile uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - payment_profiles
+      summary: Get a single payment profile
+      description: ''
+      operationId: getPaymentProfile
+      security:
+        - bearer_auth: []
+        - api_key: []
+      responses:
+        '200':
+          description: >-
+            Successully grab's the payment profile of a user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PaymentProfile'
+        <<: *common-error-responses
+
+    delete:
+      tags:
+        - payment_profiles
+      summary: Detaches a payment profile from a user's account
+      description: ''
+      operationId: deletePaymentProfile
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: >-
+            Successully detaches a payment profile from a user's account
+        <<: *common-error-responses
+
+  '/payment_profiles/{payment_profile_uuid}/set_as_default':
+    parameters:
+      - in: path
+        name: payment_profile_uuid
+        description: Payment profile uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags:
+        - payment_profiles
+      summary: Set the payment profile as the default for the account
+      description: ''
+      operationId: setPaymentProfileAsDefault
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: >-
+            Successfully set the payment profile as the default for the account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PaymentProfile'
+        <<: *common-error-responses
+
+  /subscriptions:
+    get:
+      tags:
+        - subscriptions
+      summary: Gets all the subscriptions for an account
+      description: ''
+      operationId: getSubscriptions
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: >-
+            Successfully created the subscription for the user in Stripe
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subscription'
+        <<: *common-error-responses
+
+    post:
+      tags:
+        - subscriptions
+      summary: Creates a subscription for an account
+      description: ''
+      operationId: createSubscription
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan_uuid:
+                  type: string
+                  format: uuid
+                  required: true
+        description: Pass the desired plan uuid for which to create the subscription
+        required: true
+      responses:
+        '200':
+          description: >-
+            Successfully created the subscription for the user in Stripe
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subscription'
+        <<: *common-error-responses
+
+  '/subscriptions/{subscription_uuid}':
+    get:
+      tags:
+        - subscriptions
+      summary: Retrieves a singular subscription
+      description: ''
+      operationId: getSubscription
+      parameters:
+        - in: path
+          name: subscription_uuid
+          description: Subscription uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: >-
+            Successfully retrieves the requested subscription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subscription'
+        <<: *common-error-responses
+
+    delete:
+      tags:
+        - subscriptions
+      summary: Cancels a subscription at the end of the current subscription period
+      description: ''
+      operationId: cancelSubscription
+      parameters:
+        - in: path
+          name: subscription_uuid
+          description: Subscription uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: >-
+            Successfully set the cancel_at_period_end flag on the subscription to true on the subscription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subscription'
+        <<: *common-error-responses
+
+  /payments:
+    post:
+      tags:
+        - payments
+      summary: Creates a one-time payment
+      description: ''
+      operationId: createPayment
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: >-
+            Successfully created a payment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Payment'
+        <<: *common-error-responses
+
+    delete:
+      tags:
+        - payments
+      summary: Refunds a payment
+      description: ''
+      operationId: refundPayment
+      security:
+        - api_key: []
+      parameters:
+        - in: path
+          name: payment_uuid
+          description: Payment uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: >-
+            Successfully refunded a payment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Payment'
+        <<: *common-error-responses
+  /plans:
+    post:
+      tags:
+        - plans
+      summary: Retrieves all the plans for a given currency
+      description: ''
+      operationId: getPlans
+      parameters:
+        - in: query
+          name: currency
+          description: A three-letter ISO currency code
+          required: true
+          schema:
+            type: string
+            example: usd
+      responses:
+        '200':
+          description: >-
+            Successfully retrieves the plans for a given currency
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Plan'
+        <<: *common-error-responses
+
+servers:
+  - description: production
+    url: 'https://on-demand-stripe-wrapper-dev.phoenix.dev.wwrk.co/v1'
+  - description: staging
+    url: 'https://on-demand-stripe-wrapper-prod.hydra.prod.wwrk.co/v1'
+
+components:
+  requestBodies:
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+      required: true
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-Api-Key
+      in: header
+    bearer_auth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Customer:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        account_uuid:
+          type: string
+          format: uuid
+        account_admin_uuid:
+          type: string
+          format: uuid
+    PaymentProfile:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        last_four:
+          type: string
+          description: The last 4 digit of the payment method
+          example: '1234'
+        description:
+          type: string
+          description: 'A user friendly description of the payment method'
+          example: Chase Sapphire
+        type:
+          type: string
+          description: 'Stores the type of the payment method'
+          example: card
+        brand:
+          type: string
+          description: 'Stores the brand of the payment method i.e. Mastercard, Visa, etc.'
+          example: visa
+        is_valid:
+          description: Whether the payment profile is valid
+          type: boolean
+        is_default:
+          description: Whether the payment profile is the default for the account
+          type: boolean
+          default: false
+        account_uuid:
+          description: The uuid of the account
+          type: string
+          format: uuid
+    PaymentProfileOnboardResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        stripe_setup_intent_id:
+          type: string
+          description: The setup intent used to create the payment method
+          example: seti_123456789
+    Subscription:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        cancel_at_period_end:
+          type: boolean
+          description: Whether to cancel the subscription at the end of the current period
+        current_period_start:
+          type: string
+          format: date-time
+          description: The start date and time of the current period
+        current_period_end:
+          type: string
+          format: date-time
+          description: The end date and time of the current period
+        cancel_at:
+          type: string
+          format: date-time
+          description: The date and time of when to cancel the subscription
+        canceled_at:
+          type: string
+          format: date-time
+          description: The date and time when the subscription was canceled
+        start_date:
+          type: string
+          format: date-time
+          description: The date and time when the subscription started
+        ended_at:
+          type: string
+          format: date-time
+          description: The date and time when the subscription ended
+        next_pending_invoice_item_invoice:
+          type: string
+          format: date-time
+          description: The date and time when any pending invoice items will be billed
+        status:
+          type: string
+          enum: [incomplete, incomplete_expired, trialing, active, past_due, canceled, unpaid]
+          description: The end date and time of the current period
+        collection_method:
+          type: string
+          enum: [charge_automatically, send_invoice]
+          description: The end date and time of the current period
+        plan_uuid:
+          type: string
+          format: uuid
+          description: The uuid of the plan associated with the subscription
+    Payment:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+          description: The amount of the payment in a currency's minor unit
+          example: 1000
+        currency:
+          type: string
+          <<: *currencies
+          description: The currency of the payment
+          example: usd
+        status:
+          type: string
+          description: The status of the payment
+          enum:
+            [
+              requires_payment_method,
+              requires_confirmation,
+              requires_action,
+              processing,
+              requires_capture,
+              canceled,
+              succeeded,
+            ]
+        is_refunded:
+          type: boolean
+          description: Whether the payment has been refunded
+        failure_code:
+          type: string
+          description: A pass through for stripe's failure codes for when a charge fails
+    Plan:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+          description: The amount of the payment in a currency's minor unit
+          example: 1000
+        currency:
+          type: string
+          <<: *currencies
+          description: The currency of the payment
+          example: usd
+        interval:
+          type: string
+          description: The frequency at which a subscription is billed.
+          enum: [day, week, month, year]
+        nickname:
+          type: string
+          description: A user-friendly name for the plan
+          example: WeWork Now Unlimited
+        is_active:
+          type: boolean

@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import expressValidator from 'express-validator';
 import { json } from 'body-parser';
+import docs from './docs';
 
 import logger from './logging';
 
@@ -34,6 +35,8 @@ async function main() {
   api.get('/health', (req, res) => {
     res.json({ message: 'Luna is healthy' });
   });
+
+  api.use('/docs', docs());
 
   api.use('/customers', customers());
   api.use('/payment_profiles', paymentProfiles());
