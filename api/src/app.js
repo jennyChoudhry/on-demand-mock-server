@@ -10,6 +10,7 @@ import customers from './resources/customers';
 import paymentProfiles from './resources/payment-profiles';
 import payments from './resources/payments';
 import subscriptions from './resources/subscriptions';
+import plans from './resources/plans';
 
 import packageJson from '../../package.json';
 
@@ -39,6 +40,7 @@ async function main() {
   api.use('/payment_profiles', paymentProfiles());
   api.use('/payments', payments());
   api.use('/subscriptions', subscriptions());
+  api.use('/plans', plans());
 
   app.use('/v1', api);
 
