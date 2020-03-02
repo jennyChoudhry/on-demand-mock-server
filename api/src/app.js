@@ -42,7 +42,7 @@ async function main() {
   api.use('/subscriptions', subscriptions());
   api.use('/plans', plans());
 
-  app.use('/v1', api);
+  app.use('/api/v1', api);
 
   log.info('Starting API server');
   app.server = http.createServer(app);
