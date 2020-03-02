@@ -7,7 +7,7 @@ export default function createRouter(log) {
   const router = new Router();
 
   // Creates a one-time payment
-  // curl -X POST "http://localhost:4000/v1/payments" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"payment_profile_uuid\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\"amount\":10,\"currency\":\"aed\"}"
+  // curl -X POST "http://localhost:4000/api/v1/payments" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"payment_profile_uuid\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\"amount\":10,\"currency\":\"aed\"}"
   router.post('/', async (req, res, next) => {
     log.info(`POST ${req.url} ${JSON.stringify(req.body)}`);
 

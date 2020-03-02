@@ -5,6 +5,8 @@ import { validateKnownParams } from '../../validation/helpers';
 export default function createRouter(log) {
   const router = new Router();
 
+  // Creates a one-time payment
+  // curl -X GET "http://localhost:4000/api/v1/plans?currency=usd" -H "accept: application/json"
   router.get('/', async (req, res, next) => {
     log.info(`GET ${req.url} ${JSON.stringify(req.body)}`);
 
