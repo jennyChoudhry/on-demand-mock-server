@@ -6,7 +6,7 @@ export default function createRouter(log) {
   const router = new Router();
 
   router.get('/', async (req, res, next) => {
-    log.info(`GET ${req.url}`);
+    log.info(`GET ${req.url} ${JSON.stringify(req.body)}`);
 
     const knownParams = [ 'currency' ];
     const unknownParamsErrors = validateKnownParams(knownParams, req.body);
