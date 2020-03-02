@@ -22,7 +22,7 @@ export default function createRouter(log) {
     res.json({
       data: {
         uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-        setup_intent_id: 'seti_123456789',
+        client_secret: 'seti_123456789',
         publishable_key: 'pk_test_asiPkkj3Elkd9ansdloEk9aOkEI8aklmc3',
       },
     });
@@ -30,7 +30,15 @@ export default function createRouter(log) {
 
   // Get an account's payment profiles
   router.get('/', async (req, res, next) => {
-    log.info(`GET ${req.url}`);
+    log.info(`GET ${req.url} ${JSON.stringify(req.body)}`);
+
+    const knownParams = [ 'account_uuid' ];
+    const unknownParamsErrors = validateKnownParams(knownParams, req.body);
+    const validationResult = await req.getValidationResult();
+    if (!validationResult.isEmpty() || unknownParamsErrors.length) {
+      handleValidationFailure([ ...validationResult.array(), ...unknownParamsErrors ], res);
+      return;
+    }
 
     res.json({
       data: [

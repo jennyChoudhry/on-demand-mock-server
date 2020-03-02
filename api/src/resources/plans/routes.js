@@ -9,7 +9,7 @@ export default function createRouter(log) {
     log.info(`GET ${req.url}`);
 
     const knownParams = [ 'currency' ];
-    const unknownParamsErrors = validateKnownParams(knownParams, req.query);
+    const unknownParamsErrors = validateKnownParams(knownParams, req.body);
     const validationResult = await req.getValidationResult();
     if (!validationResult.isEmpty() || unknownParamsErrors.length) {
       handleValidationFailure([ ...validationResult.array(), ...unknownParamsErrors ], res);

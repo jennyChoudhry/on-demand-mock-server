@@ -11,7 +11,7 @@ export default function createRouter(log) {
   router.post('/', async (req, res, next) => {
     log.info(`POST ${req.url} ${JSON.stringify(req.body)}`);
 
-    const knownParams = [ 'payment_profile_uuid', 'amount', 'currency' ];
+    const knownParams = [ 'payment_profile_uuid', 'service_rendered_at', 'amount', 'currency' ];
     const unknownParamsErrors = validateKnownParams(knownParams, req.body);
     const validationResult = await req.getValidationResult();
     if (!validationResult.isEmpty() || unknownParamsErrors.length) {
